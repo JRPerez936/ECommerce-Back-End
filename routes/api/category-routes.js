@@ -14,8 +14,22 @@ router.get('/', (req, res) => {
 });
 
 router.get('/:id', (req, res) => {
-  // find one category by its `id` value
-  // be sure to include its associated Products
+  Category.findOne({
+    where: {
+      id: req.params.id
+    },
+    include: [Product],
+  }).then(dbCategory => {
+    if(!dbCategory){
+      res.status(404).json({message: 'No Categories Found'});
+      return;
+    }
+    res.json(dbCategory);
+  })
+  .catch(err =>{
+    console.log(err);
+    res.status(400).json(err);
+  });
 });
 
 router.post('/', (req, res) => {
